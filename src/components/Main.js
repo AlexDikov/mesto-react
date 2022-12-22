@@ -9,17 +9,25 @@ export default function Main(props) {
   const [cards, setCards] = React.useState([]);
 
   React.useEffect(() => {
-    api.getProfile().then((data) => {
-      setUserName(data.name);
-      setUserDescription(data.about);
-      setUserAvatar(data.avatar);
-    });
-  }, []);
+    api
+      .getProfile()
+      .then((data) => {
+        setUserName(data.name);
+        setUserDescription(data.about);
+        setUserAvatar(data.avatar);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 
-  React.useEffect(() => {
-    api.getInitialCards().then((data) => {
-      setCards(data);
-    });
+    api
+      .getInitialCards()
+      .then((data) => {
+        setCards(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   return (
@@ -53,7 +61,7 @@ export default function Main(props) {
       </section>
       <section className="elements">
         {cards.map((card, i) => (
-          <Card key={i} card={card} onCardClick={props.onCardClick} />
+          <Card key={card._id} card={card} onCardClick={props.onCardClick} />
         ))}
       </section>
     </main>
