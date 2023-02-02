@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import Header from "./Header";
 import Main from "./Main";
 import Footer from "./Footer";
@@ -11,14 +11,14 @@ import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 
 export default function App() {
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
-  const [selectedCard, setSelectedCard] = React.useState(null);
-  const [currentUser, setCurrentUser] = React.useState({});
-  const [cards, setCards] = React.useState([]);
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
+  const [currentUser, setCurrentUser] = useState({});
+  const [cards, setCards] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     api
       .getProfile()
       .then((data) => {
@@ -64,14 +64,21 @@ export default function App() {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
 
     api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
-      setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
+      setCards((state) => state.map((c) => (c._id === card._id ? newCard : c))).catch((err) => {
+        console.log(err);
+      });
     });
   }
 
   function handleCardDelete(card) {
     const isOwn = card.owner._id === currentUser._id;
 
-    api.removeCard(card._id, isOwn).then(setCards((state) => state.filter((c) => c._id !== card._id)));
+    api
+      .removeCard(card._id, isOwn)
+      .then(setCards((state) => state.filter((c) => c._id !== card._id)))
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function handleUpdateUser({ name, about: description }) {
@@ -82,21 +89,34 @@ export default function App() {
       })
       .then((data) => {
         setCurrentUser(data);
+      })
+      .catch((err) => {
+        console.log(err);
       });
     handleCloseAllPopups();
   }
 
   function handleUpdateAvatar(data) {
-    api.editAvatar(data).then((data) => {
-      setCurrentUser(data);
-    });
+    api
+      .editAvatar(data)
+      .then((data) => {
+        setCurrentUser(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     handleCloseAllPopups();
   }
 
   function handleAddPlaceSubmit(data) {
-    api.addNewCard(data).then((newCard) => {
-      setCards([newCard, ...cards]);
-    });
+    api
+      .addNewCard(data)
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     handleCloseAllPopups();
   }
 

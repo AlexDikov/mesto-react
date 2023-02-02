@@ -1,14 +1,15 @@
 import PopupWithForm from "./PopupWithForm";
-import React from "react";
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import { useEffect, useState } from "react";
 
 export default function AddPlacePopup(props) {
-  const [place, setPlace] = React.useState("");
-  const [link, setLink] = React.useState("");
+  const [place, setPlace] = useState("");
+  const [link, setLink] = useState("");
 
   function handleSubmit(e) {
     e.preventDefault();
     props.onAddPlace({ place, link });
+    setPlace("");
+    setLink("");
   }
   function handlePlaceChange(e) {
     setPlace(e.target.value);
@@ -16,6 +17,11 @@ export default function AddPlacePopup(props) {
   function handleLinkChange(e) {
     setLink(e.target.value);
   }
+
+  useEffect(() => {
+    setPlace("");
+    setLink("");
+  }, [props.isOpen]);
 
   return (
     <PopupWithForm

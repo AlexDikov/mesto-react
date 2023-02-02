@@ -1,26 +1,18 @@
 import PopupWithForm from "./PopupWithForm";
-import React from "react";
-import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import { useEffect, useRef } from "react";
 
 export default function EditAvatarPopup(props) {
-  const [avatar, setAvatar] = React.useState("");
-  const avatarRef = React.useRef();
-
-  const currentUser = React.useContext(CurrentUserContext);
+  const avatarRef = useRef();
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    props.onUpdateAvatar(avatar);
+    props.onUpdateAvatar(avatarRef.current.value);
   }
 
-  React.useEffect(() => {
-    setAvatar(currentUser.avatar);
-  }, [currentUser]);
-
-  function handleAvatarChange(e) {
-    setAvatar(e.target.value);
-  }
+  useEffect(() => {
+    avatarRef.current.value = "";
+  }, [props.isOpen]);
 
   return (
     <PopupWithForm
@@ -37,7 +29,6 @@ export default function EditAvatarPopup(props) {
         placeholder="Ссылка на фотографию"
         required
         ref={avatarRef}
-        onChange={handleAvatarChange}
       />
       <span className="popup__input-error popup__input-error_second popup__input-error_second-short"></span>
       <button className="popup__save-button" type="submit" onSubmit={handleSubmit}>

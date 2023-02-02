@@ -1,4 +1,4 @@
-import React from "react";
+import { useContext } from "react";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 export default function Card(props) {
@@ -18,7 +18,7 @@ export default function Card(props) {
     props.onCardDelete(props.card);
   }
 
-  const currentUser = React.useContext(CurrentUserContext);
+  const currentUser = useContext(CurrentUserContext);
   const isOwn = owner._id === currentUser._id;
   const isLiked = likes.some((i) => i._id === currentUser._id);
   const cardLikeButtonClassName = `element-place__like-button ${isLiked && "element-place__like-button_active"}`;
